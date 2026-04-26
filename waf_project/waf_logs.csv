@@ -1,0 +1,16 @@
+2026-04-23 00:34:48,id=1' OR '1'='1,Normal,Allowed
+2026-04-23 00:35:24,"id=1 UNION SELECT user, password FROM users--",SQL Injection,Blocked
+2026-04-23 00:36:06,q=test' --,SQL Injection,Blocked
+2026-04-23 00:36:34,admin=' OR '1'='1,SQL Injection,Blocked
+2026-04-23 00:36:58,id=1' OR '1'='1,Normal,Allowed
+2026-04-23 00:37:26,name=<script>alert(1)</script>,XSS Attack,Blocked
+2026-04-23 00:38:02,q=machine+learning+tutorial,Normal,Allowed
+2026-04-23 00:38:03,user_id=550&mode=full,Normal,Allowed
+2026-04-23 00:38:04,id=1' OR '1'='1,Normal,Allowed
+2026-04-23 00:38:05,"id=1 UNION SELECT user, password FROM users--",SQL Injection,Blocked
+2026-04-23 00:38:11,query=admin' --,SQL Injection,Blocked
+2026-04-23 00:38:15,name=<script>alert('XSS')</script>,XSS Attack,Blocked
+2026-04-23 00:38:22,bio=<img src=x onerror=confirm(1)>,Normal,Allowed
+2026-04-23 00:38:23,input=<script>alert(1)</script>,XSS Attack,Blocked
+2026-04-23 00:39:07,id=%27%20OR%201%3D1,Normal,Allowed
+2026-04-23 00:39:08,cmd=<sCrIpT>prompt(8)</ScRiPt>,XSS Attack,Blocked
