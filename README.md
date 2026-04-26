@@ -1,4 +1,4 @@
-# AI-Enhanced Middleware for Web Application Firewall (WAF) 🛡️
+# AI-Enhanced Middleware for Web Application Firewall (WAF)
 
 This project is an intelligent security middleware designed to protect Web APIs from common cyberattacks like **SQL Injection (SQLi)** and **Cross-Site Scripting (XSS)** using Machine Learning. It serves as a proactive defense layer that analyzes incoming traffic in real-time.
 
