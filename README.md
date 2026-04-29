@@ -1,4 +1,4 @@
-# AI-Powered Web Application Firewall (WAF)
+# AI-Enhanced Web Application Firewall (WAF)
 
 ## Overview
 This project presents a smart Security Middleware built with Flask and Machine Learning to detect and mitigate web-based attacks, specifically SQL Injection (SQLi) and Cross-Site Scripting (XSS). The system employs a Hybrid Security Model that combines Machine Learning predictions with Rule-Based Heuristic analysis to ensure maximum protection.
