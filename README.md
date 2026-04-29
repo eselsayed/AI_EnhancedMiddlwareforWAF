@@ -1,58 +1,178 @@
-# AI-Enhanced Web Application Firewall (WAF)
+# AI-Enhanced Middleware WAF (Web Application Firewall)
 
 ## Overview
-This project presents a smart Security Middleware built with Flask and Machine Learning to detect and mitigate web-based attacks, specifically SQL Injection (SQLi) and Cross-Site Scripting (XSS). The system employs a Hybrid Security Model that combines Machine Learning predictions with Rule-Based Heuristic analysis to ensure maximum protection.
 
-## Technical Stack
-* Backend: Python (Flask)
-* Machine Learning: Scikit-learn (Random Forest Classifier)
-* Vectorization: TF-IDF (Term Frequency-Inverse Document Frequency)
-* Pattern Matching: Regular Expressions (Regex)
-* Logging: CSV and In-memory data structures
+This project is a web application firewall that uses machine learning and rule-based techniques to find dangerous HTTP requests examples being SQL Injection and XSS threats.
 
-## Security Logic
-The monitoring engine (monitor_traffic) evaluates every incoming request using two main layers:
+The system combines:
 
-1. AI Detection Layer: Uses a pre-trained Random Forest model to analyze the intent of the payload. It requires a confidence score of 70% or higher to trigger a block.
-2. Heuristic Layer: Uses specific regular expressions to catch high-risk signatures such as "OR 1=1", "DROP TABLE", and HTML event handlers.
+* A trained machine learning model (TF-IDF + classifier)
+* Regex-based security rules
+* Real-time request monitoring using Flask middleware
 
-If either layer identifies a request as malicious, the system logs the attempt and returns a 403 Forbidden response.
+All incoming requests are analyzed and logged, and results are displayed on a live dashboard.
 
-## Installation and Execution
+---
 
-1. Install Dependencies:
-   pip install flask joblib numpy scikit-learn
+## Features
 
-2. Project Files:
-   * app.py: Core application logic and WAF middleware.
-   * model.pkl: Pre-trained security model.
-   * vectorizer.pkl: Saved TF-IDF vectorizer.
-   * templates/: Contains dashboard.html and 403.html.
+* Real-time HTTP request inspection
+* Detection of SQL Injection and XSS attacks
+* Classification of normal and malicious traffic
+* Hybrid detection approach (rules + machine learning)
+* Confidence threshold control (default: 80%)
+* Logging to CSV file
+* Web dashboard for monitoring traffic
+* Custom 403 response page for blocked requests
 
-3. Run the Server:
-   python app.py
+---
 
-## Testing Scenarios
+## Project Structure
 
-| Attack Type | Payload Example | Expected Result |
-| :--- | :--- | :--- |
-| Normal Traffic | /?page=2&limit=10 | Allowed |
-| SQL Injection | /?user=' OR 1=1 -- | Blocked (403) |
-| XSS Attack | /?data=<svg/onload=confirm(1)> | Blocked (403) |
+```
 
-## Monitoring Dashboard
-The application includes a real-time monitoring dashboard accessible at the root URL (/). It displays:
-* Timestamp of the request.
-* Decoded input payload.
-* Detection type (Normal, SQL Injection, XSS, or Detected Attack).
-* Final status (Allowed or Blocked).
+AI_EnhancedMiddlwareforWAF/
+│
+├── waf_project/
+│   ├── app.py                  # Flask WAF middleware
+│   ├── model.pkl               # Trained ML model
+│   ├── vectorizer.pkl         # TF-IDF vectorizer
+│   ├── waf_logs.csv           # Request logs
+│   ├── templates/
+│   │   ├── dashboard.html     # Monitoring dashboard
+│   │   └── 403.html           # Block page
+│   ├── step1_preprocess.py    # Data preprocessing
+│   ├── step2_train.py         # Model training
+│   ├── step3_evaluate.py      # Model evaluation
+│   └── simulate_attack.py     # Test requests
+│
+├── requirements.txt
+└── README.md
 
-## Evaluation and Future Work
-The current system serves as a proof of concept for integrating AI into web security. Future improvements include:
-* Performing a comprehensive evaluation using a validation dataset.
-* Generating a Confusion Matrix to refine the optimal Confidence Threshold.
-* Expanding the training data to include more diverse attack vectors.
+````
+
+---
+
+## How It Works
+
+1. Each incoming request is intercepted using Flask middleware
+2. The query string is extracted and decoded
+3. Two detection layers are applied:
+   * Rule-based detection using regex patterns
+   * Machine learning classification using a trained model
+4. A final decision is made based on prediction and confidence threshold
+5. Requests are either:
+   * Allowed and logged
+   * Blocked and redirected to a 403 page
+
+---
+
+## Detection Logic
+
+* Normal requests are allowed
+* Requests classified as attacks with high confidence are blocked
+* Low confidence predictions are treated as normal traffic
+* Regex rules can immediately flag obvious malicious patterns
+
+---
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+````
+
+---
+
+## Run the Project
+
+```bash
+cd waf_project
+python app.py
+```
+
+Open in browser:
+
+```
+http://127.0.0.1:5000/
+```
+
+---
+
+## Testing Examples
+
+### Normal Requests
+
+```
+http://127.0.0.1:5000/?name=hello
+http://127.0.0.1:5000/?id=123
+http://127.0.0.1:5000/?user=ahmed
+```
+
+Expected result:
+
+* Status: Allowed
+* Detection: Normal
+
+---
+
+### SQL Injection Tests
+
+```
+http://127.0.0.1:5000/?id=1' OR '1'='1
+http://127.0.0.1:5000/?user=admin'--
+http://127.0.0.1:5000/?q=1 OR 1=1
+http://127.0.0.1:5000/?login=admin'#
+```
+
+Expected result:
+
+* Detection: SQL Injection
+* Status: Blocked
+* Response: 403 page
+
+---
+
+### XSS Tests
+
+```
+http://127.0.0.1:5000/?q=<script>alert(1)</script>
+http://127.0.0.1:5000/?input=<img src=x onerror=alert(1)>
+http://127.0.0.1:5000/?data=<svg onload=alert(1)>
+```
+
+Expected result:
+
+* Detection: XSS Attack
+* Status: Blocked
+* Response: 403 page
+
+---
+
+### Mixed Attacks
+
+```
+http://127.0.0.1:5000/?search=' OR 1=1-- <script>alert(1)</script>
+http://127.0.0.1:5000/?q=admin' OR 'a'='a'<script>
+```
+
+Expected result:
+
+* Classified as attack
+* Blocked or detected depending on model confidence
+
+---
+
+## Notes
+
+* This project is for educational and research purposes
+* Not intended for production use
+* Accuracy depends on training dataset quality
+* Confidence threshold can be adjusted for tuning performance
+
+---
 
 ## Contributors
-* Esraa Ouda (ID: 20596363)
-* Hind Hussein (ID: 20596370)
+
+* Esraa Ouda
+* Hind Hussein
